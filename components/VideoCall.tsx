@@ -1,20 +1,24 @@
 import React, { CSSProperties, useState } from 'react'
 import AgoraUIKit, { layout, PropsInterface } from 'agora-react-uikit'
 import 'agora-react-uikit/dist/index.css'
+import config from '../src/config'
 
 const App: React.FunctionComponent = () => {
   const [videocall, setVideocall] = useState(true)
   const [isHost, setHost] = useState(true)
-  const [isPinned, setPinned] = useState(false)
+  const [isPinned, setPinned] = useState(config.initial_layout==="pinned")
   const [username, setUsername] = useState('')
 
   const props:PropsInterface = {
     rtcProps:{
-        appId: '18ec1d2ef3ed4d7d9bfa4b91e21e43c9',
-        channel: 'test',
-        token: '007eJxTYMhXXvD37LNdL+9Z3F/8VkXU5P3HG957nm2UWCDjpcyt8oFdgcHQIjXZMMUoNc04NcUkxTzFMikt0STJ0jDVyDDVxDjZUnple3JDICPDJLNWRkYGCATxWRhKUotLGBgAD0ghYQ==', //add your token if using app in secured mode
+        appId: config.agora_app_id,
+        channel: config.agora_channel,
+        token: config.agora_app_token,
         role: isHost ? 'host' : 'audience',
         layout: isPinned ? layout.pin : layout.grid
+      },
+      styleProps:{
+        localBtnContainer:{backgroundColor:'#333333'}
       },
       rtmProps:{username: username || 'user', displayUsername: true},
       callbacks:{
@@ -24,19 +28,19 @@ const App: React.FunctionComponent = () => {
     }
   
   return (
-    <div style={styles.container}>
-      <div style={styles.videoContainer}>
-        <h1 style={styles.heading}>Chat App</h1>
+    <div className="flex m-auto flex-1 h-screen lg:w-full">
+      <div className="flex bg-slate-400 p-5 rounded-xl mt-5 flex-col flex-auto">
+        <h1 className='text-center font-semibold text-zinc-900  mb-6 text-5xl'>Chat App</h1>
         {videocall ? (<>
-          <div style={styles.nav}>
-            <p style={{ fontSize: 20, width: 200 }}>Youre {isHost ? 'a host' : 'an audience'}</p>
-            <p style={styles.btn} onClick={() => setHost(!isHost)}>Change Role</p>
-            <p style={styles.btn} onClick={() => setPinned(!isPinned)}>Change Layout</p>
+          <div className='mb-3' style={styles.nav}>
+            <p className='rounded-lg text-xl text-slate-100' >Youre {isHost ? 'a host' : 'an audience'}</p>
+            <p className='bg-slate-600 p-3 text-lg text-center shadow-md hover:bg-slate-500 rounded-lg text-slate-100 cursor-pointer' onClick={() => setHost(!isHost)}>Change Role</p>
+            <p className='bg-slate-600 p-3 text-lg text-center shadow-md hover:bg-slate-500 rounded-lg text-slate-100 cursor-pointer' onClick={() => setPinned(!isPinned)}>Change Layout</p>
           </div>
           <AgoraUIKit {...props} />
             </>
         ) : (
-          <div style={styles.nav}>
+          <div  style={styles.nav}>
               <input style={styles.input} placeholder='nickname' type="text" value={username} onChange={(e) => { setUsername(e.target.value) }} />
             <h3 style={styles.btn} onClick={() => setVideocall(true)}>Start Call</h3>
           </div>
@@ -51,7 +55,7 @@ const styles = {
   heading: { textAlign: 'center' as const, marginBottom: 0 },
   videoContainer: { display: 'flex', flexDirection: 'column', flex: 1 } as CSSProperties,
   nav: { display: 'flex', justifyContent: 'space-around' },
-  btn: { backgroundColor: '#007bff', cursor: 'pointer', borderRadius: 5, padding: '4px 8px', color: '#ffffff', fontSize: 20 },
+  btn: { cursor: 'pointer', borderRadius: 5, padding: '4px 8px', color: '#ffffff', fontSize: 20 },
   input: {display: 'flex', height: 24, alignSelf: 'center'} as CSSProperties
 }
 
