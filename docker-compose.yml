@@ -1,0 +1,29 @@
+version: '3.5'
+services:
+
+  mysql:
+    image: agoradb:latest
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: agora_app
+      MYSQL_USER: agora_user
+      MYSQL_PASSWORD: test
+      LANG: C.UTF-8
+    ports:
+      - "4306:3306"
+
+  agora:
+    build:
+      context: .
+    restart: always
+    environment:
+      DBHOST: mysql
+      DBUSER: agora_user
+      DBPASS: test
+      DBNAME: agora_app
+    ports:
+      - "3005:3000"
+    volumes:
+      - ./:/var/app/agora_app
